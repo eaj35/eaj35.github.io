@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cxl · 我的 AI Agent 之旅</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #555;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --border: #e5e7eb;
+    --chatgpt: #10a37f;
+    --workbuddy: #2563eb;
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    background: linear-gradient(135deg, #eff6ff 0%, #fafafa 60%);
+    padding: 100px 24px 80px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: #fff;
+    font-size: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .hero h1 { font-size: 40px; font-weight: 700; letter-spacing: 1px; }
+  .hero .tagline {
+    margin-top: 12px;
+    font-size: 18px;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .badges { margin-top: 28px; }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    margin: 4px;
+    border-radius: 999px;
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  /* ---- Sections ---- */
+  .container { max-width: 1000px; margin: 0 auto; padding: 72px 24px; }
+  section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  section .section-desc {
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+    font-size: 16px;
+  }
+  .divider { height: 1px; background: var(--border); }
+
+  /* ---- Agent cards ---- */
+  .agents {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .agent-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .agent-card.chatgpt::before { background: var(--chatgpt); }
+  .agent-card.workbuddy::before { background: var(--workbuddy); }
+  .agent-logo {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .chatgpt .agent-logo { background: var(--chatgpt); }
+  .workbuddy .agent-logo { background: var(--workbuddy); }
+  .agent-card h3 { font-size: 22px; margin-bottom: 4px; }
+  .agent-card .agent-role {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .agent-card p { font-size: 15px; color: var(--text-secondary); }
+  .agent-tags { margin-top: 18px; }
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin: 3px 4px 3px 0;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* ---- Projects ---- */
+  .projects { display: grid; gap: 20px; }
+  .project {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 30px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+  }
+  .project-icon {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .project h3 { font-size: 18px; margin-bottom: 6px; }
+  .project p { font-size: 15px; color: var(--text-secondary); }
+  .project .meta {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .project .meta .who {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #fff;
+  }
+  .who.chatgpt { background: var(--chatgpt); }
+  .who.workbuddy { background: var(--workbuddy); }
+  .who.both { background: linear-gradient(90deg, var(--chatgpt), var(--workbuddy)); }
+
+  /* ---- Workflow ---- */
+  .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px;
+    text-align: center;
+  }
+  .flow-step .num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .flow-step h3 { font-size: 16px; margin-bottom: 8px; }
+  .flow-step p { font-size: 14px; color: var(--text-secondary); }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 30px; }
+    .project { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="avatar">🤖</div>
+  <h1>你好，我是 cxl</h1>
+  <p class="tagline">
+    一个正在探索 AI Agent 的开发者。我用 AI 智能体辅助编程，
+    把想法快速变成能运行的代码。这里记录我与 Agent 协作的过程和成果。
+  </p>
+  <div class="badges">
+    <span class="badge">🧠 AI Agent 爱好者</span>
+    <span class="badge">💻 AI 辅助编程实践者</span>
+    <span class="badge">🌐 本站由 WorkBuddy 协助搭建</span>
+  </div>
+</header>
+
+<div class="container">
+  <section id="agents">
+    <h2>我用过的 AI Agent</h2>
+    <p class="section-desc">它们不只是聊天工具，更是我的编程搭档。以下是我实际使用过的智能体：</p>
+    <div class="agents">
+      <div class="agent-card chatgpt">
+        <div class="agent-logo">G</div>
+        <h3>ChatGPT</h3>
+        <div class="agent-role">通用对话助手 · OpenAI</div>
+        <p>
+          我最常用的通用型 Agent。日常用它解答概念、分析报错、
+          生成小工具脚本，也用它做头脑风暴和学习新技术。
+          它是我的"第一入口"——遇到问题先问它。
+        </p>
+        <div class="agent-tags">
+          <span class="tag">代码问答</span>
+          <span class="tag">脚本生成</span>
+          <span class="tag">Debug 排错</span>
+          <span class="tag">概念讲解</span>
+        </div>
+      </div>
+      <div class="agent-card workbuddy">
+        <div class="agent-logo">W</div>
+        <h3>WorkBuddy</h3>
+        <div class="agent-role">智能工作伙伴 · 腾讯</div>
+        <p>
+          能真正"动手"的 Agent：直接读写本地文件、运行命令、
+          起本地服务、把成果交付成文件。我从"复制粘贴代码"
+          进化到"说一句需求，收一个项目"。
+        </p>
+        <div class="agent-tags">
+          <span class="tag">端到端建站</span>
+          <span class="tag">本地文件操作</span>
+          <span class="tag">命令执行</span>
+          <span class="tag">成果交付</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<div class="container">
+  <section id="projects">
+    <h2>用 Agent 完成的代码生成工作</h2>
+    <p class="section-desc">一些基础但真实的代码生成实践——从单文件脚本到完整可部署的网站：</p>
+    <div class="projects">
+      <div class="project">
+        <div class="project-icon">📄</div>
+        <div>
+          <h3>实用小脚本生成</h3>
+          <p>批量重命名文件、数据格式转换（CSV → JSON）、简单的定时提醒工具等。描述需求，几分钟拿到可运行的 Python 脚本。</p>
+          <div class="meta">
+            主要搭档：<span class="who chatgpt">ChatGPT</span>
+          </div>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-icon">🧮</div>
+        <div>
+          <h3>网页小工具 / Demo 页面</h3>
+          <p>用自然语言描述交互效果，直接生成单文件 HTML 工具页（计算器、倒计时、表格处理等），即开即用。</p>
+          <div class="meta">
+            主要搭档：<span class="who chatgpt">ChatGPT</span>
+            <span class="who workbuddy">WorkBuddy</span>
+          </div>
+        </div>
+      </div>
+      <div class="project">
+        <div class="project-icon">🌐</div>
+        <div>
+          <h3>个人网站（就是你正在看的这个）</h3>
+          <p>从零到上线：一句需求 → Agent 编写完整页面 → 初始化 Git 仓库 → 推送到 GitHub → 启用 GitHub Pages。全流程由 WorkBuddy 端到端完成，我只需要提需求。</p>
+          <div class="meta">
+            主要搭档：<span class="who workbuddy">WorkBuddy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="divider"></div>
+
+<div class="container">
+  <section id="workflow">
+    <h2>我的 AI 辅助编程工作流</h2>
+    <p class="section-desc">把 Agent 用顺手之后，写代码的方式变成了这样：</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <h3>描述需求</h3>
+        <p>用自然语言讲清楚我想要什么，越具体越好。</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <h3>Agent 生成代码</h3>
+        <p>ChatGPT 给思路和代码片段，WorkBuddy 直接产出完整文件。</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <h3>运行验证</h3>
+        <p>跑起来看效果，把报错和信息反馈回去迭代。</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <h3>部署交付</h3>
+        <p>能用的就发布上线，比如这个 GitHub Pages 网站。</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>由 <a href="https://github.com/" target="_blank">GitHub Pages</a> 托管 · 与 WorkBuddy 协作构建</p>
+  <p style="margin-top:6px;">© 2026 cxl</p>
+</footer>
+
+</body>
+</html>
